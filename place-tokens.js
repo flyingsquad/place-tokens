@@ -113,7 +113,7 @@ Hooks.on("init", function() {
 	  hint: "When this key is pressed the selected tokens will be moved to the current mouse location.",
 	  editable: [
 		{
-		  key: "M"
+		  key: 'KeyM'
 		}
 	  ],
 	  onDown: keybind => {
@@ -136,7 +136,7 @@ Hooks.on("init", function() {
 	  hint: "When this key is pressed tokens for the player characters in the Player Characters folder will be placed at the cursor location.",
 	  editable: [
 		{
-		  key: "G"
+		  key: 'KeyG'
 		}
 	  ],
 	  onDown: keybind => { placeGroup(); },
