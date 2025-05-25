@@ -12,6 +12,8 @@ For DnD 5e and SWADE you can create a Group actor in the Actors tab that lists a
 
 ### Using the Player Characters Folder
 
+This method is for game systems that don't have a Group actor to list members of a group. It's also useful for any system if you just want to plop the player characters down with DnD and SWADE without having to drag the Group actor to the scene.
+
 First create a folder in the Actors tab. The default name is Player Characters, but you can name it anything you want. If you choose a different name you must set that name in the Player Character Folder setting in the Place Tokens section of the Settings.
 
 To place the group move the cursor to the location on the scene where you want the tokens to appear. Then press the "G" key. Tokens for the actor will be placed at that location.
