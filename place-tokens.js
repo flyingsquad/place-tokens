@@ -7,14 +7,24 @@ export class PlaceTokens {
 		let deltax = 0;
 		let deltay = 0;
 		let n = 1;
+		
+		let ids = [];
+		if (game.system.id == 'dnd5e') {
+			for (let uuid of groupToken.actor.system.members.ids)
+				ids.push(uuid);
+		} else {
+			for (const [key, value] of groupToken.actor.system.members) {
+				let [str, uuid] = key.split('.');
+				ids.push(uuid);
+			}
+		}
 
-		for (const [key, value] of groupToken.actor.system.members) {
-			let [str, uuid] = key.split('.');
+		for (let uuid of ids) {
 			let actor = game.actors.get(uuid);
 			
 			tokens.push(await actor.getTokenDocument({ x: groupToken.x + deltax, y: groupToken.y + deltay}));
 			deltax += canvas.scene.grid.sizeX;
-			if (n % Math.trunc(groupToken.actor.system.members.size / 2) == 0) {
+			if (n % Math.trunc(ids.length / 2) == 0) {
 				deltax = 0;
 				deltay += canvas.scene.grid.sizeY;
 			}
