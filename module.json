@@ -13,8 +13,8 @@
     "verified": "12"
   },
   "esmodules": ["place-tokens.js"],
-  "version": "0.0.0",
+  "version": "0.0.2",
   "url": "https://github.com/flyingsquad/place-tokens",
   "manifest": "https://raw.githubusercontent.com/flyingsquad/place-tokens/main/module.json",
-  "download": "https://github.com/flyingsquad/place-tokens/archive/refs/tags/v0.0.0.zip"
+  "download": "https://github.com/flyingsquad/place-tokens/archive/refs/tags/v0.0.2.zip"
 }
