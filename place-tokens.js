@@ -14,7 +14,7 @@ export class PlaceTokens {
 			
 			tokens.push(await actor.getTokenDocument({ x: groupToken.x + deltax, y: groupToken.y + deltay}));
 			deltax += canvas.scene.grid.sizeX;
-			if (n % (groupToken.actor.system.members.size / 2) == 0) {
+			if (n % Math.trunc(groupToken.actor.system.members.size / 2) == 0) {
 				deltax = 0;
 				deltay += canvas.scene.grid.sizeY;
 			}
