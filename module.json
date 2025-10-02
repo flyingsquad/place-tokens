@@ -1,7 +1,7 @@
 {
   "id": "place-tokens",
   "title": "Place Tokens",
-  "description": "Places tokens from a group in a scene.",
+  "description": "Places tokens from a group or a folder on a scene.",
   "socket": true,
   "authors": [
     {
@@ -13,8 +13,8 @@
     "verified": "13"
   },
   "esmodules": ["place-tokens.js"],
-  "version": "0.0.5",
+  "version": "13.0.0",
   "url": "https://github.com/flyingsquad/place-tokens",
   "manifest": "https://raw.githubusercontent.com/flyingsquad/place-tokens/main/module.json",
-  "download": "https://github.com/flyingsquad/place-tokens/archive/refs/tags/v0.0.5.zip"
+  "download": "https://github.com/flyingsquad/place-tokens/archive/refs/tags/v13.0.0.zip"
 }

@@ -53,7 +53,7 @@ function renderTokenHUD(hud, html) {
   if (hud.object.document.actor.type != "group")
     return;
 
-  html[0].querySelector('.control-icon[data-action="config"]').insertAdjacentHTML(
+  html.querySelector('.control-icon[data-action="config"]').insertAdjacentHTML(
     "beforebegin",
     `
         <div class="control-icon" data-action="place-token">
@@ -62,9 +62,9 @@ function renderTokenHUD(hud, html) {
       `
   );
 
-  const placeTokenButton = html.find('.control-icon[data-action="place-token"]');
+  const placeTokenButton = html.querySelector('.control-icon[data-action="place-token"]');
 
-  placeTokenButton.on("click", async (event) => {
+  placeTokenButton.addEventListener("click", async (event) => {
     event.preventDefault();
 	placeTokens(hud.object.document);
   });
