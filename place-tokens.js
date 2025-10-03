@@ -91,6 +91,8 @@ function placeGroup() {
 	let uuids = [];
 	for (let actor of game.actors) {
 		if (actor?.folder?._id == folder._id) {
+			if (actor.type == 'vehicle')
+				continue;
 			if (actor.type == 'character' || !pcsonly && actor.type == 'npc')
 				uuids.push(actor._id);
 		}
