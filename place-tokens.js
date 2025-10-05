@@ -126,7 +126,7 @@ Hooks.on("init", function() {
 		for (let token of canvas.tokens.controlled) {
 			let gridx = Math.floor((token.x + deltaX) / canvas.grid.size);
 			let gridy = Math.floor((token.y + deltaY) / canvas.grid.size);
-			token.document.update({"x": gridx * canvas.grid.size, "y": gridy * canvas.grid.size});
+			token.document.update({"x": gridx * canvas.grid.size, "y": gridy * canvas.grid.size}, {animate: false});
 		}
 	  },
 	  restricted: true,             // Restrict this Keybinding to gamemaster only?
