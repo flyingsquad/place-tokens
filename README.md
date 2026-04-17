@@ -16,7 +16,7 @@ This method is for game systems that don't have a Group actor to list members of
 
 First create a folder in the Actors tab. The default name is Player Characters, but you can name it anything you want. If you choose a different name you must set that name in the Player Character Folder setting in the Place Tokens section of the Settings.
 
-To place the group move the cursor to the location on the scene where you want the tokens to appear. Then press the "G" key. Tokens for the actor will be placed at that location.
+To place the group move the cursor to the location on the scene where you want the tokens to appear. Then press the "Shift+G" key. Tokens for the actor will be placed at that location.
 
 You can change this to another key in the Place Tokens section of Configure Controls.
 
@@ -29,3 +29,11 @@ This allows you to move characters to another location in the scene without havi
 First select all the tokens you want to move (Shift+click them or use a selection rectangle). Move the cursor to the location to which you wish to move the tokens. Press the "M" key. The tokens will be moved to that location, maintaining their relative positions. 
 
 This key can be changed in the Place Tokens section of Configure Controls.
+
+## Gather Player Tokens
+
+This gathers all the player character tokens from across the map to a single location. Press the "G" key and all tokens of type "character" will be moved to the current mouse location.
+
+## Default Movement: Blink
+
+This setting will set the movement for tokens created on the scene to "blink" (teleport) instead of the default value, which is walk. This removes the extremely slow dragging movement of the other movement modes. However, if you wish to use the different movement penalties defined in regions you'll need to select the desired movement mode on the token. Be sure to refresh the browser after changing this value.

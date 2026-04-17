@@ -162,12 +162,11 @@ Hooks.on("init", function() {
 	});
 
 	game.keybindings.register("place-tokens", "gatherTokens", {
-	  name: "Gather Players Tokens",
+	  name: "Gather Player Tokens",
 	  hint: "When this key is pressed all player tokens in the scene will be moved to the current mouse location.",
 	  editable: [
 		{
-		  key: 'KeyG',
-		  modifiers: ["Shift"]
+		  key: 'KeyG'
 		}
 	  ],
 	  onDown: keybind => { gatherPlayerTokens(); },
@@ -176,11 +175,12 @@ Hooks.on("init", function() {
 	});
 
 	game.keybindings.register("place-tokens", "placeGroup", {
-	  name: "Place Player Characters",
+	  name: "Place Player Tokens",
 	  hint: "When this key is pressed tokens for the player characters in the Player Characters folder will be placed at the cursor location.",
 	  editable: [
 		{
-		  key: 'KeyG'
+		  key: 'KeyG',
+		  modifiers: ["Shift"]
 		}
 	  ],
 	  onDown: keybind => { placeGroup(); },
@@ -204,5 +204,25 @@ Hooks.on("init", function() {
 	  type: Boolean,       // Number, Boolean, String, Object
 	  default: false
 	});
+	game.settings.register('place-tokens', 'blink', {
+	  name: 'Default Movement: Blink',
+	  hint: 'Default movement mode: blink/teleport when tokens are created on the canvas.',
+	  scope: 'world',     // "world" = sync to db, "client" = local storage
+	  restricted: true,   // GM sets only
+	  config: true,       // false if you dont want it to show in module config
+	  type: Boolean,       // Number, Boolean, String, Object
+	  default: true
+	});
 
+});
+
+// Make default movement action teleport instead of walk.
+
+async function createToken(tokdoc, action, id) {
+	await tokdoc.update({movementAction: 'blink'});
+}
+
+Hooks.once('init', async function () {
+	if (game.settings.get('place-tokens', 'blink'))
+		Hooks.on('createToken', createToken);
 });
