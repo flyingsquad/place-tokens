@@ -108,6 +108,44 @@ function placeGroup() {
 	createTokens(x, y, uuids);
 }
 
+function gatherPlayerTokens() {
+	let playerTokens = canvas.tokens.documentCollection.filter(t => t.disposition == 1);
+	if (playerTokens.length == 0) {
+		ui.notifications.notify("No player tokens found on scene.");
+		return;
+	}
+
+	let startx = Math.floor(canvas.mousePosition.x / canvas.grid.size) * canvas.grid.size;
+	let y = Math.floor(canvas.mousePosition.y / canvas.grid.size) * canvas.grid.size;
+
+	let i = 0;
+	let x = startx;
+
+	for (let token of playerTokens) {
+		token.move([{x: x, y: y}], {animate: false, constrainOptions: {ignoreWalls: true}});
+		x += canvas.grid.size;
+		if (++i % 3 == 0) {
+			x = startx;
+			y += canvas.grid.size;
+		}
+	}
+}
+
+function moveSelected() {
+	if (canvas.tokens.controlled.length < 1)
+		return;
+	const deltaX = canvas.mousePosition.x - canvas.tokens.controlled[0].x;
+	const deltaY = canvas.mousePosition.y - canvas.tokens.controlled[0].y;
+	for (let token of canvas.tokens.controlled) {
+		let gridx = Math.floor((token.x + deltaX) / canvas.grid.size);
+		let gridy = Math.floor((token.y + deltaY) / canvas.grid.size);
+		const x = gridx * canvas.grid.size;
+		const y = gridy * canvas.grid.size;
+		//token.document.update({x: gridx * canvas.grid.size, y: gridy * canvas.grid.size}, {animate: false});
+		const waypoints = [{x: x, y: y}];
+		token.document.move([{x: x, y: y}], {animate: false, constrainOptions: {ignoreWalls: true}});
+	}
+}
 
 Hooks.on("init", function() {
 	game.keybindings.register("place-tokens", "moveTokens", {
@@ -118,17 +156,21 @@ Hooks.on("init", function() {
 		  key: 'KeyM'
 		}
 	  ],
-	  onDown: keybind => {
-		if (canvas.tokens.controlled.length < 1)
-			return;
-		const deltaX = canvas.mousePosition.x - canvas.tokens.controlled[0].x;
-		const deltaY = canvas.mousePosition.y - canvas.tokens.controlled[0].y;
-		for (let token of canvas.tokens.controlled) {
-			let gridx = Math.floor((token.x + deltaX) / canvas.grid.size);
-			let gridy = Math.floor((token.y + deltaY) / canvas.grid.size);
-			token.document.update({"x": gridx * canvas.grid.size, "y": gridy * canvas.grid.size}, {animate: false});
+	  onDown: keybind => { moveSelected(); },
+	  restricted: true,             // Restrict this Keybinding to gamemaster only?
+	  precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+	});
+
+	game.keybindings.register("place-tokens", "gatherTokens", {
+	  name: "Gather Players Tokens",
+	  hint: "When this key is pressed all player tokens in the scene will be moved to the current mouse location.",
+	  editable: [
+		{
+		  key: 'KeyG',
+		  modifiers: ["Shift"]
 		}
-	  },
+	  ],
+	  onDown: keybind => { gatherPlayerTokens(); },
 	  restricted: true,             // Restrict this Keybinding to gamemaster only?
 	  precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
 	});
