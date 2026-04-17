@@ -109,7 +109,7 @@ function placeGroup() {
 }
 
 function gatherPlayerTokens() {
-	let playerTokens = canvas.tokens.documentCollection.filter(t => t.actor.type == 'character');
+	let playerTokens = canvas.tokens.documentCollection.filter(t => t?.actor?.type == 'character');
 	if (playerTokens.length == 0) {
 		ui.notifications.notify("No player tokens found on scene.");
 		return;
