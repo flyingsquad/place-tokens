@@ -108,8 +108,16 @@ function placeGroup() {
 	createTokens(x, y, uuids);
 }
 
-function gatherPlayerTokens() {
-	let playerTokens = canvas.tokens.documentCollection.filter(t => t?.actor?.type == 'character');
+
+/**	Gather player tokens or all tokens with friendly disposition if flag set.
+ */
+
+function gatherTokens(allFriendly) {
+	let playerTokens;
+	if 	(allFriendly)
+		playerTokens = canvas.tokens.documentCollection.filter(t => t.disposition == 1);
+	else
+		playerTokens = canvas.tokens.documentCollection.filter(t => t?.actor?.type == 'character');
 	if (playerTokens.length == 0) {
 		ui.notifications.notify("No player tokens found on scene.");
 		return;
@@ -136,6 +144,8 @@ function moveSelected() {
 		return;
 	const deltaX = canvas.mousePosition.x - canvas.tokens.controlled[0].x;
 	const deltaY = canvas.mousePosition.y - canvas.tokens.controlled[0].y;
+	const elevation = canvas.tokens.controlled[0].document.elevation;
+
 	for (let token of canvas.tokens.controlled) {
 		let gridx = Math.floor((token.x + deltaX) / canvas.grid.size);
 		let gridy = Math.floor((token.y + deltaY) / canvas.grid.size);
@@ -143,7 +153,7 @@ function moveSelected() {
 		const y = gridy * canvas.grid.size;
 		//token.document.update({x: gridx * canvas.grid.size, y: gridy * canvas.grid.size}, {animate: false});
 		const waypoints = [{x: x, y: y}];
-		token.document.move([{x: x, y: y}], {animate: false, constrainOptions: {ignoreWalls: true}});
+		token.document.move([{x: x, y: y, elevation: elevation}], {animate: false, constrainOptions: {ignoreWalls: true}});
 	}
 }
 
@@ -161,7 +171,7 @@ Hooks.on("init", function() {
 	  precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
 	});
 
-	game.keybindings.register("place-tokens", "gatherTokens", {
+	game.keybindings.register("place-tokens", "gatherPlayerTokens", {
 	  name: "Gather Player Tokens",
 	  hint: "When this key is pressed all player tokens in the scene will be moved to the current mouse location.",
 	  editable: [
@@ -169,8 +179,21 @@ Hooks.on("init", function() {
 		  key: 'KeyG'
 		}
 	  ],
-	  onDown: keybind => { gatherPlayerTokens(); },
-	  restricted: true,             // Restrict this Keybinding to gamemaster only?
+	  onDown: keybind => { gatherTokens(false); },
+	  restricted: true,             // Restrict this Keybinding to gamemaster only
+	  precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+	});
+	game.keybindings.register("place-tokens", "gatherFriendlyTokens", {
+	  name: "Gather Friendly Tokens",
+	  hint: "When this key is pressed all friendly tokens in the scene will be moved to the current mouse location.",
+	  editable: [
+		{
+		  key: 'KeyG',
+		  modifiers: ["Alt"]
+		}
+	  ],
+	  onDown: keybind => { gatherTokens(true); },
+	  restricted: true,             // Restrict this Keybinding to gamemaster only
 	  precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
 	});
 
@@ -219,7 +242,8 @@ Hooks.on("init", function() {
 // Make default movement action teleport instead of walk.
 
 async function createToken(tokdoc, action, id) {
-	await tokdoc.update({movementAction: 'blink'});
+	if (id == game.user.id)
+		await tokdoc.update({movementAction: 'blink'});
 }
 
 Hooks.once('init', async function () {

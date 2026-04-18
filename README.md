@@ -34,6 +34,10 @@ This key can be changed in the Place Tokens section of Configure Controls.
 
 This gathers all the player character tokens from across the map to a single location. Press the "G" key and all tokens of type "character" will be moved to the current mouse location.
 
+## Gather Friendly Tokens
+
+This gathers all tokens with the "friendly" disposition from across the map to a single location. Press the "Alt+G" keys and all friendly tokens will be moved to the current mouse location.
+
 ## Default Movement: Blink
 
 This setting will set the movement for tokens created on the scene to "blink" (teleport) instead of the default value, which is walk. This removes the extremely slow dragging movement of the other movement modes. However, if you wish to use the different movement penalties defined in regions you'll need to select the desired movement mode on the token. Be sure to refresh the browser after changing this value.
