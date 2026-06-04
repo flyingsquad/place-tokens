@@ -10,11 +10,11 @@
   ],
   "compatibility": {
     "minimum": "12",
-    "verified": "13"
+    "verified": "14"
   },
   "esmodules": ["place-tokens.js"],
-  "version": "13.0.7",
-  "download": "https://github.com/flyingsquad/place-tokens/archive/refs/tags/v13.0.7.zip",
+  "version": "13.0.8",
+  "download": "https://github.com/flyingsquad/place-tokens/archive/refs/tags/v13.0.8.zip",
   "url": "https://github.com/flyingsquad/place-tokens",
   "manifest": "https://raw.githubusercontent.com/flyingsquad/place-tokens/main/module.json"
 }
