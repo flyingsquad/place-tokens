@@ -236,7 +236,9 @@ Hooks.on("init", function() {
 	  type: Boolean,       // Number, Boolean, String, Object
 	  default: true
 	});
-
+	game.placeTokens = {
+		pushToken: pushToken
+	};
 });
 
 // Make default movement action teleport instead of walk.
@@ -250,3 +252,87 @@ Hooks.once('init', async function () {
 	if (game.settings.get('place-tokens', 'blink'))
 		Hooks.on('createToken', createToken);
 });
+
+
+async function pushToken(event, token, destination) {
+	/*	Push a token to one of the shapes defined in the destination
+	 *	region. Avoid other tokens.
+	 */
+	 
+	function findToken(scene, x, y) {
+		for (const t of scene.tokens) {
+			const tw = t.width * scene.grid.sizeX;
+			const th = t.height * scene.grid.sizeY;
+			if (t.x <= x && t.x + tw >= x && t.y <= y && t.y + th >= y)
+				return t;
+		}
+		return null;
+	}
+
+	const parts = destination.split(".")
+	const sceneId = parts[1];
+	const scene = await fromUuid('Scene.' + sceneId)
+	if (!token || !token.actor)
+		return;
+	const actor = token.actor;
+	const region = await fromUuid(destination);
+	if (!region)
+		return ui.notifications.warn(`The region ${destination} does not exist.`);
+	
+	let userId;
+	for (const owner in actor.ownership)
+	  if (owner != 'default')
+		userId = owner;
+	
+	if (region.shapes.length == 0)
+		return ui.notifications.warn(`The region ${destination} has no defined shapes.`);
+
+	let x, y;
+	// Default to first shape in the region.
+	const first = region.shapes[0];
+	switch (first.type) {
+	case 'rectangle':
+	case 'ellipse':
+		x = first.x;
+		y = first.y;
+		break;
+	case 'polygon':
+		x = first.points[0];
+		y = first.points[1];
+		break;
+	}
+
+	let found = false;
+	for (const shape of region.shapes) {
+		switch (shape.type) {
+		case 'rectangle':
+		case 'ellipse':
+			if (!findToken(scene, shape.x + token.w/2, shape.y + token.h/2)) {
+				x = shape.x;
+				y = shape.y;
+				found = true;
+				break;
+			}
+			break;
+		case 'polygon':
+			if (!findToken(scene, shape.points[0] + token.w/2, shape.points[1] + token.h/2)) {
+				x = shape.points[0];
+				y = shape.points[1];
+				found = true;
+				break;
+			}
+			break;
+		}
+		if (found)
+			break;
+	}
+
+	const user = game.users.get(userId);
+	const newToken = await actor.getTokenDocument({ x: x, y: y});
+	await scene.createEmbeddedDocuments('Token', [newToken]);
+	
+	if (user) {
+		game.socket.emit("pullToScene", sceneId, user.id);
+	}
+	await canvas.scene.deleteEmbeddedDocuments("Token", [token.id]);
+}
