@@ -14,7 +14,11 @@ async function createTokens(x, y, ids) {
 	for (let uuid of ids) {
 		let actor = game.actors.get(uuid);
 		
-		tokens.push(await actor.getTokenDocument({ x: x + deltax, y: y + deltay}));
+		tokens.push(await actor.getTokenDocument({
+			x: x + deltax, y: y + deltay, 
+			level: canvas.level._id, 
+			elevation: canvas.level.elevation.bottom
+		}));
 		deltax += canvas.scene.grid.sizeX;
 		if (n % Math.trunc(ids.length / 2) == 0) {
 			deltax = 0;
@@ -128,9 +132,11 @@ function gatherTokens(allFriendly) {
 
 	let i = 0;
 	let x = startx;
+	let elevation = canvas.level.elevation.bottom;
 
 	for (let token of playerTokens) {
-		token.move([{x: x, y: y}], {animate: false, constrainOptions: {ignoreWalls: true}});
+		token.move([{x: x, y: y, level: canvas.level._id, elevation: elevation}], 
+			{animate: false, constrainOptions: {ignoreWalls: true}});
 		x += canvas.grid.size;
 		if (++i % 3 == 0) {
 			x = startx;
@@ -141,10 +147,10 @@ function gatherTokens(allFriendly) {
 
 function moveSelected() {
 	if (canvas.tokens.controlled.length < 1)
-		return;
+		return ui.notifications.notify('No tokens selected.');
 	const deltaX = canvas.mousePosition.x - canvas.tokens.controlled[0].x;
 	const deltaY = canvas.mousePosition.y - canvas.tokens.controlled[0].y;
-	const elevation = canvas.tokens.controlled[0].document.elevation;
+	const elevation = canvas.level.elevation.bottom;
 
 	for (let token of canvas.tokens.controlled) {
 		let gridx = Math.floor((token.x + deltaX) / canvas.grid.size);
@@ -153,7 +159,8 @@ function moveSelected() {
 		const y = gridy * canvas.grid.size;
 		//token.document.update({x: gridx * canvas.grid.size, y: gridy * canvas.grid.size}, {animate: false});
 		const waypoints = [{x: x, y: y}];
-		token.document.move([{x: x, y: y, elevation: elevation}], {animate: false, constrainOptions: {ignoreWalls: true}});
+		token.document.move([{x: x, y: y, elevation: elevation, level: canvas.level._id}],
+			{animate: false, constrainOptions: {ignoreWalls: true}});
 	}
 }
 
